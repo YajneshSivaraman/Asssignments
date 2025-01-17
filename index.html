@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <!--Tailwind-->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- css -->
+    <link rel="stylesheet" href="style.css">
+
+
+</head>
+
+<body class="bg-black my-auto h-screen flex items-center ">
+    <div class="w-[900px] h-[500px] bg-[#121314] mx-auto rounded-[5px] border-2 border-white/10">
+        <!-- Header Section Start -->
+        <section
+            class="h-[7%] bg-[#0a0b0d] border-solid border-b-2 border-b-green-400/30 shadow-sm shadow-green-900/50 flex items-center justify-between">
+            <h1 class="text-green-700 text-start ml-4">API Data</h1>
+            <svg width="50px" height="50px" fill="currentColor" class="fill-green-300/50" viewbox="0 0 24 24">
+                <path d="M10 10h4v4h-4zm6 0h4v4h-4zM4 10h4v4H4z" />
+            </svg>
+        </section>
+        <!-- Header Section End -->
+
+        <!-- Body Section Start-->
+        <section class="h-[80%] border-solid border-b-2 border-b-green-400/30">
+            <!-- URL -->
+            <div class=" h-[100%] flex justify-center items-center" id="urlData">
+                <form class="flex items-center justify-center" id="form">
+                    <label for="api"></label>
+                    <input type="url" id="api"
+                        class="bg-black/40 px-4 focus:outline-green-600 focus:outline-1 placeholder:text-green-700/40 focus:outline-none text-green-700 w-[700px] h-[40px]"
+                        placeholder="Enter API link here">
+                    <button class="bg-white/10 h-[40px] text-white/50 py-2 px-4 text-center">
+                        submit
+                    </button>
+
+                </form>
+            </div>
+
+            <!-- Return Api -->
+            <div class="h-[100%] p-4 text-green-900 overflow-y-auto hidden " id="dispData">
+            </div>
+
+            <!-- Loader -->
+            <div class="flex flex-col justify-center h-[100%] items-center hidden" id="loader">
+                <div class="loader "></div>
+            </div>
+
+
+        </section>
+        <!-- Body Section End-->
+
+
+        <!-- Footer Section Start -->
+        <section class="bg-[#0a0b0d] h-[13%] flex items-center justify-between">
+
+            <button class="bg-white/10 h-[40px] text-white/50 py-2 px-4 text-center ml-4 hidden"
+                id="refresh">Refresh</button>
+
+            <button class="bg-white/10 h-[40px] text-white/50 py-2 px-4 text-center ml-4 mr-4 hidden" id="back"
+                onclick="location.reload()">Back</button>
+
+
+
+        </section>
+        <!-- Footer Section End -->
+
+    </div>
+
+</body>
+<script>
+    let api = document.getElementById('api');
+    let form = document.getElementById('form');
+    let dispData = document.getElementById('dispData');
+    let urlData = document.getElementById('urlData');
+    let refresh = document.getElementById('refresh');
+    let loader = document.getElementById('loader');
+    let back = document.getElementById('back');
+
+
+    function FetchData(rlink) {
+        urlData.classList.add("hidden");
+        loader.classList.remove("hidden");
+        urlData.classList.add("hidden");
+        dispData.classList.add("hidden");
+        back.classList.add("hidden");
+        refresh.classList.add("hidden");
+        console.log("init");
+        setTimeout(async () => {
+            try {
+                let response = await fetch(`${rlink.value}`);
+                let data = await response.json();
+                console.log(data);
+                dispData.classList.remove("hidden");
+                loader.classList.add("hidden")
+                back.classList.remove("hidden")
+                refresh.classList.remove("hidden")
+                dispData.textContent = JSON.stringify(data, null, 4);
+
+            } catch (error) {
+                console.log(`error is ${error}`);
+                dispData.classList.remove("hidden");
+                dispData.textContent = `Error${error}`;
+                back.classList.remove("hidden")
+            }
+        }, 1000)
+    }
+
+    form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        FetchData(api);
+    })
+
+    refresh.addEventListener("click", (e) => {
+        FetchData(api);
+
+    })
+
+</script>
+
+</html>
